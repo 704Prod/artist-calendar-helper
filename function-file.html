@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Artist Calendar Helper Function File</title>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <script>
+    // Required stub so "showTaskPane" action exists, even if we don't use it directly.
+    Office.onReady(function () {
+      // No-op
+    });
+
+    function showTaskPane(event) {
+      // Command is wired to ShowTaskpane in the manifest, so this can be empty.
+      event.completed();
+    }
+  </script>
+</head>
+<body></body>
+</html>
