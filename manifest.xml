@@ -5,7 +5,7 @@
   xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
   xsi:type="MailApp">
 
-  <!-- Use any valid GUID; this one is fine to start -->
+  <!-- Unique ID for this add-in -->
   <Id>9b25a5b0-5b88-4b02-9d33-4e0b0c8e7040</Id>
 
   <Version>1.0.0.0</Version>
@@ -15,38 +15,38 @@
   <DisplayName DefaultValue="Artist Calendar Helper" />
   <Description DefaultValue="Apply the Legacy Crew artist calendar naming and category standard to Outlook appointments." />
 
-  <!-- These URLs just need to be HTTPS. You can keep them as-is for now. -->
-  <IconUrl DefaultValue="https://YOUR_GITHUB_PAGES_URL/icon-32.png" />
-  <HighResolutionIconUrl DefaultValue="https://YOUR_GITHUB_PAGES_URL/icon-64.png" />
-  <SupportUrl DefaultValue="https://YOUR_GITHUB_PAGES_URL/" />
+  <!-- These can be dummy HTTPS URLs for now; they just need correct format -->
+  <IconUrl DefaultValue="https://example.com/icon-32.png" />
+  <HighResolutionIconUrl DefaultValue="https://example.com/icon-64.png" />
+  <SupportUrl DefaultValue="https://example.com/support" />
 
   <Hosts>
     <Host Name="Mailbox" />
   </Hosts>
 
-  <!-- We need Mailbox 1.8 for categories & start/end -->
+  <!-- Outlook add-ins REQUIRE a Requirements block with Mailbox set -->
   <Requirements>
     <Sets DefaultMinVersion="1.8">
       <Set Name="Mailbox" />
     </Sets>
   </Requirements>
 
-  <!-- Read/write because we set subject, location, time, categories -->
+  <!-- DefaultSettings is REQUIRED for MailApp -->
+  <DefaultSettings>
+    <!-- This is the URL of your task pane page; we'll point it to GitHub Pages later -->
+    <SourceLocation DefaultValue="https://example.com/taskpane.html" />
+    <!-- Height of the task pane in pixels -->
+    <RequestedHeight>350</RequestedHeight>
+  </DefaultSettings>
+
+  <!-- We need to read/write subject, location, time, categories -->
   <Permissions>ReadWriteMailbox</Permissions>
 
-  <!-- Only show for appointment compose/edit -->
+  <!-- Only activate this add-in on appointment compose/edit forms -->
   <Rule xsi:type="RuleCollection" Mode="Or">
     <Rule xsi:type="ItemIs" ItemType="Appointment" FormType="Edit" />
   </Rule>
 
   <DisableEntityHighlighting>false</DisableEntityHighlighting>
 
-  <!-- Classic (non-command) form settings: the task pane HTML -->
-  <FormSettings>
-    <Form xsi:type="ItemEdit">
-      <DesktopSettings>
-        <SourceLocation DefaultValue="https://YOUR_GITHUB_PAGES_URL/taskpane.html" />
-      </DesktopSettings>
-    </Form>
-  </FormSettings>
 </OfficeApp>
