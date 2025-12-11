@@ -1,0 +1,91 @@
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+  margin: 0;
+  padding: 12px;
+}
+
+#app {
+  max-width: 400px;
+}
+
+h1 {
+  font-size: 16px;
+  margin: 0 0 12px 0;
+}
+
+.field-label {
+  display: block;
+  font-weight: 600;
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+input[type="text"],
+select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.buttons-row {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.warnings {
+  margin-top: 8px;
+  padding: 6px;
+  border-left: 3px solid #e0a800;
+  background-color: #fff3cd;
+}
+
+.errors {
+  margin-top: 8px;
+  padding: 6px;
+  border-left: 3px solid #c82333;
+  background-color: #f8d7da;
+}
+
+.status {
+  margin-top: 8px;
+  padding: 6px;
+  border-left: 3px solid #155724;
+  background-color: #d4edda;
+}
+
+.hidden {
+  display: none;
+}
+
+#step-indicator {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.step {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+}
+
+.step.active {
+  background-color: #0078d4;
+  color: #ffffff;
+}
+
+.step-panel {
+  margin-top: 4px;
+}

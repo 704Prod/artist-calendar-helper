@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Artist Calendar Helper</title>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <link rel="stylesheet" href="taskpane.css" />
+</head>
+<body>
+  <div id="app">
+    <h1>Artist Calendar Helper</h1>
+
+    <!-- Step indicator -->
+    <div id="step-indicator">
+      <span id="step1-label" class="step active">Step 1: Category</span>
+      <span id="step2-label" class="step">Step 2: Details</span>
+    </div>
+
+    <!-- STEP 1: CATEGORY -->
+    <div id="step1" class="step-panel">
+      <label for="categorySelect" class="field-label">Category (required)</label>
+      <select id="categorySelect">
+        <option value="">-- Select Category --</option>
+        <option value="PERFORMANCE">PERFORMANCE</option>
+        <option value="STUDIO">STUDIO</option>
+        <option value="COLLAB">COLLAB</option>
+        <option value="VIDEO SHOOT">VIDEO SHOOT</option>
+        <option value="PHOTOSHOOT">PHOTOSHOOT</option>
+        <option value="PRESS">PRESS</option>
+        <option value="MARKETING">MARKETING</option>
+        <option value="ADMIN">ADMIN</option>
+        <option value="REHEARSAL">REHEARSAL</option>
+        <option value="TRAVEL">TRAVEL</option>
+        <option value="RELEASE DAY">RELEASE DAY</option>
+        <option value="REST">REST</option>
+      </select>
+
+      <div class="buttons-row">
+        <button id="step1Next">Next: Details</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: DETAILS -->
+    <div id="step2" class="step-panel hidden">
+      <label for="artistInput" class="field-label">Artist / Participants (required)</label>
+      <input id="artistInput" type="text" placeholder="Example: 704 Prod, Kyla Harmony" list="artistList" />
+
+      <datalist id="artistList">
+        <option value="704 Prod"></option>
+        <option value="704 Lenz"></option>
+        <option value="Kyla Harmony"></option>
+        <option value="AP"></option>
+        <option value="Medeuca"></option>
+        <option value="Crosshairs"></option>
+        <option value="K4"></option>
+      </datalist>
+
+      <label for="shortDescription" class="field-label">Short Description (required)</label>
+      <input id="shortDescription" type="text" placeholder="Short, functional description" />
+
+      <label for="locationInput" class="field-label">Location (required)</label>
+      <input id="locationInput" type="text" placeholder="Studio, venue, city, etc." />
+
+      <div id="warnings" class="warnings hidden"></div>
+      <div id="errors" class="errors hidden"></div>
+      <div id="status" class="status hidden"></div>
+
+      <div class="buttons-row">
+        <button id="step2Back">Back</button>
+        <button id="applyButton">Generate & Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="taskpane.js"></script>
+</body>
+</html>
