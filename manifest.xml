@@ -13,7 +13,6 @@
   <DisplayName DefaultValue="Artist Calendar Helper"/>
   <Description DefaultValue="Apply the Legacy Crew artist calendar naming and category standard to Outlook appointments."/>
   
-  <!-- Replace with your actual hosted URLs -->
   <IconUrl DefaultValue="https://YOUR_GITHUB_PAGES_URL/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://YOUR_GITHUB_PAGES_URL/icon-64.png"/>
   <SupportUrl DefaultValue="https://YOUR_GITHUB_PAGES_URL/"/>
@@ -39,7 +38,6 @@
     </Form>
   </FormSettings>
   
-  <!-- Permissions MUST come after FormSettings for MailApp schema -->
   <Permissions>ReadWriteItem</Permissions>
   
   <Rule xsi:type="RuleCollection" Mode="Or">
@@ -47,7 +45,6 @@
     <Rule xsi:type="ItemIs" ItemType="Appointment" FormType="ReadOrEdit"/>
   </Rule>
 
-  <!-- VersionOverrides for modern functionality -->
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
     <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1" xsi:type="VersionOverridesV1_1">
       
