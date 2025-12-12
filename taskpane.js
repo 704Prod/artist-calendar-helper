@@ -41,7 +41,7 @@ let lastDurationMinutes = null;
 // Initialize Office JS
 Office.onReady(function () {
   if (Office.context.host === Office.HostType.Outlook) {
-    document.addEventListener("DOMContentLoaded", initializeUI);
+    initializeUI(); // Call directly - Office.onReady already waits for DOM
     ensureMasterCategories();
   }
 });
