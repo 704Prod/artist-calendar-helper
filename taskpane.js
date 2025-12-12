@@ -115,7 +115,6 @@ function onApplyClicked() {
   const artistRaw = document.getElementById("artistInput").value.trim();
   const shortDescription = document.getElementById("shortDescription").value.trim();
   const location = document.getElementById("locationInput").value.trim();
-  const rosterAttendeesRaw = document.getElementById("rosterAttendees").value.trim();
   const manualAttendeesRaw = document.getElementById("manualAttendees").value.trim();
 
   // Required fields enforcement
@@ -138,8 +137,8 @@ function onApplyClicked() {
     showWarnings(warnings);
   }
 
-  // Parse attendees
-  const attendeeEmails = parseAttendees(rosterAttendeesRaw, manualAttendeesRaw);
+  // Parse attendees - check if artists in artistRaw match roster for auto-invite
+  const attendeeEmails = parseAttendees(artistRaw, manualAttendeesRaw);
 
   const finalSubject =
     normalizedCategory +
@@ -191,15 +190,16 @@ function normalizeArtists(artistRaw) {
 }
 
 /**
- * Parse attendees from both roster selection and manual input
+ * Parse attendees from artist names and manual input
+ * Artists in the roster automatically get invited
  * Returns array of email addresses
  */
-function parseAttendees(rosterAttendeesRaw, manualAttendeesRaw) {
+function parseAttendees(artistRaw, manualAttendeesRaw) {
   const emails = [];
 
-  // Parse roster attendees (comma-separated names)
-  if (rosterAttendeesRaw) {
-    const names = rosterAttendeesRaw
+  // Parse artist names and check if they're in roster
+  if (artistRaw) {
+    const names = artistRaw
       .split(",")
       .map(n => n.trim())
       .filter(n => n.length > 0);
@@ -208,6 +208,7 @@ function parseAttendees(rosterAttendeesRaw, manualAttendeesRaw) {
       const artist = ARTIST_ROSTER.find(a => a.name.toLowerCase() === name.toLowerCase());
       if (artist && artist.email) {
         emails.push(artist.email);
+        console.log("Auto-inviting roster artist:", name, "->", artist.email);
       }
     });
   }
@@ -220,6 +221,7 @@ function parseAttendees(rosterAttendeesRaw, manualAttendeesRaw) {
       .filter(e => e.length > 0 && isValidEmail(e));
 
     emails.push(...manualEmails);
+    console.log("Added manual attendees:", manualEmails);
   }
 
   // Remove duplicates
