@@ -6,7 +6,7 @@
            xsi:type="MailApp">
 
   <Id>9b25a5b0-5b88-4b02-9d33-4e0b0c8e7040</Id>
-  <Version>1.0.0.0</Version>
+  <Version>1.0.1.0</Version>
   <ProviderName>Legacy Crew</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   
@@ -37,7 +37,7 @@
       </DesktopSettings>
     </Form>
   </FormSettings>
-  
+
   <Permissions>ReadWriteItem</Permissions>
   
   <Rule xsi:type="RuleCollection" Mode="Or">
@@ -76,14 +76,36 @@
                     </Icon>
                     <Action xsi:type="ShowTaskpane">
                       <SourceLocation resid="Taskpane.Url"/>
-                      <SupportsPinning>true</SupportsPinning>
-                      <RequestedHeight>350</RequestedHeight>
                     </Action>
                   </Control>
                 </Group>
               </OfficeTab>
             </ExtensionPoint>
           </DesktopFormFactor>
+          
+          <MobileFormFactor>
+            <FunctionFile resid="Commands.Url"/>
+            <ExtensionPoint xsi:type="MobileOnlineMeetingCommandSurface">
+              <Control xsi:type="MobileButton" id="mobileCalendarButton">
+                <Label resid="TaskpaneButton.Label"/>
+                <Icon>
+                  <bt:Image size="25" scale="1" resid="Icon.32x32"/>
+                  <bt:Image size="25" scale="2" resid="Icon.32x32"/>
+                  <bt:Image size="25" scale="3" resid="Icon.80x80"/>
+                  <bt:Image size="32" scale="1" resid="Icon.32x32"/>
+                  <bt:Image size="32" scale="2" resid="Icon.32x32"/>
+                  <bt:Image size="32" scale="3" resid="Icon.80x80"/>
+                  <bt:Image size="48" scale="1" resid="Icon.32x32"/>
+                  <bt:Image size="48" scale="2" resid="Icon.80x80"/>
+                  <bt:Image size="48" scale="3" resid="Icon.80x80"/>
+                </Icon>
+                <Action xsi:type="ShowTaskpane">
+                  <SourceLocation resid="Taskpane.Url"/>
+                </Action>
+              </Control>
+            </ExtensionPoint>
+          </MobileFormFactor>
+          
         </Host>
       </Hosts>
       
@@ -99,10 +121,10 @@
         </bt:Urls>
         <bt:ShortStrings>
           <bt:String id="GroupLabel" DefaultValue="Artist Calendar"/>
-          <bt:String id="TaskpaneButton.Label" DefaultValue="Open Calendar Helper"/>
+          <bt:String id="TaskpaneButton.Label" DefaultValue="Calendar Helper"/>
         </bt:ShortStrings>
         <bt:LongStrings>
-          <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Opens the Artist Calendar Helper to format appointments"/>
+          <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Format appointments with Artist Calendar standard"/>
         </bt:LongStrings>
       </Resources>
       
