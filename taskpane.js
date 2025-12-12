@@ -1,19 +1,30 @@
 // taskpane.js
+// Artist Calendar Helper - v1.0.3
+
+// Artist roster with email addresses
+const ARTIST_ROSTER = [
+  { name: "704 Prod", email: "prod@legacycrew.com" },
+  { name: "704 Lenz", email: "lenz@legacycrew.com" },
+  { name: "Kyla Harmony", email: "kyla@legacycrew.com" },
+  { name: "AP", email: "ap@legacycrew.com" },
+  { name: "Medeuca", email: "medeuca@legacycrew.com" },
+  { name: "Crosshairs", email: "crosshairs@legacycrew.com" },
+  { name: "K4", email: "k4@legacycrew.com" }
+];
 
 // Category definitions and colors (Office.MailboxEnums.CategoryColor)
-// Mapping: based on your PDF + closest preset colors.
 const CATEGORY_DEFINITIONS = [
   { name: "PERFORMANCE", color: "Preset0" },   // Red
   { name: "STUDIO",       color: "Preset7" },  // Blue
   { name: "COLLAB",       color: "Preset8" },  // Purple
   { name: "VIDEO SHOOT",  color: "Preset5" },  // Teal
-  { name: "PHOTOSHOOT",   color: "Preset9" },  // Cranberry (closest to pink)
+  { name: "PHOTOSHOOT",   color: "Preset9" },  // Cranberry
   { name: "PRESS",        color: "Preset3" },  // Yellow
   { name: "MARKETING",    color: "Preset4" },  // Green
   { name: "ADMIN",        color: "Preset12" }, // Gray
   { name: "REHEARSAL",    color: "Preset1" },  // Orange
   { name: "TRAVEL",       color: "Preset2" },  // Brown
-  { name: "RELEASE DAY",  color: "Preset10" }, // Steel / light blue-ish
+  { name: "RELEASE DAY",  color: "Preset10" }, // Steel
   { name: "REST",         color: "Preset14" }  // Black
 ];
 
@@ -41,7 +52,7 @@ let lastDurationMinutes = null;
 // Initialize Office JS
 Office.onReady(function () {
   if (Office.context.host === Office.HostType.Outlook) {
-    initializeUI(); // Call directly - Office.onReady already waits for DOM
+    initializeUI();
     ensureMasterCategories();
   }
 });
@@ -104,6 +115,8 @@ function onApplyClicked() {
   const artistRaw = document.getElementById("artistInput").value.trim();
   const shortDescription = document.getElementById("shortDescription").value.trim();
   const location = document.getElementById("locationInput").value.trim();
+  const rosterAttendeesRaw = document.getElementById("rosterAttendees").value.trim();
+  const manualAttendeesRaw = document.getElementById("manualAttendees").value.trim();
 
   // Required fields enforcement
   const missing = [];
@@ -124,6 +137,9 @@ function onApplyClicked() {
   if (warnings.length > 0) {
     showWarnings(warnings);
   }
+
+  // Parse attendees
+  const attendeeEmails = parseAttendees(rosterAttendeesRaw, manualAttendeesRaw);
 
   const finalSubject =
     normalizedCategory +
@@ -150,39 +166,102 @@ function onApplyClicked() {
         return;
       }
 
-      // Apply categories and duration
-      applyCategoryAndDuration(item, normalizedCategory);
+      // Add attendees if any
+      if (attendeeEmails.length > 0) {
+        addAttendees(item, attendeeEmails, function() {
+          // Apply categories and duration after attendees
+          applyCategoryAndDuration(item, normalizedCategory);
+        });
+      } else {
+        // No attendees, proceed to categories
+        applyCategoryAndDuration(item, normalizedCategory);
+      }
     });
   });
 }
 
-/**
- * Normalize artist input:
- * - Split by comma
- * - Trim
- * - Join with " x "
- */
 function normalizeArtists(artistRaw) {
   const parts = artistRaw
     .split(",")
     .map(p => p.trim())
     .filter(p => p.length > 0);
 
-  if (parts.length === 0) return artistRaw; // fallback
-
+  if (parts.length === 0) return artistRaw;
   return parts.join(" x ");
 }
 
 /**
- * Evaluate style warnings:
- * - Emojis
- * - Hashtags
- * - Location-first in description (matches exact location string at start)
+ * Parse attendees from both roster selection and manual input
+ * Returns array of email addresses
  */
+function parseAttendees(rosterAttendeesRaw, manualAttendeesRaw) {
+  const emails = [];
+
+  // Parse roster attendees (comma-separated names)
+  if (rosterAttendeesRaw) {
+    const names = rosterAttendeesRaw
+      .split(",")
+      .map(n => n.trim())
+      .filter(n => n.length > 0);
+
+    names.forEach(name => {
+      const artist = ARTIST_ROSTER.find(a => a.name.toLowerCase() === name.toLowerCase());
+      if (artist && artist.email) {
+        emails.push(artist.email);
+      }
+    });
+  }
+
+  // Parse manual attendees (comma or semicolon separated emails)
+  if (manualAttendeesRaw) {
+    const manualEmails = manualAttendeesRaw
+      .split(/[,;]/)
+      .map(e => e.trim())
+      .filter(e => e.length > 0 && isValidEmail(e));
+
+    emails.push(...manualEmails);
+  }
+
+  // Remove duplicates
+  return [...new Set(emails)];
+}
+
+/**
+ * Basic email validation
+ */
+function isValidEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
+/**
+ * Add attendees to the appointment as optional attendees
+ */
+function addAttendees(item, emailAddresses, callback) {
+  if (!item.optionalAttendees || !item.optionalAttendees.addAsync) {
+    console.log("Optional attendees API not available");
+    if (callback) callback();
+    return;
+  }
+
+  const attendees = emailAddresses.map(email => ({
+    emailAddress: email,
+    displayName: email.split("@")[0] // Use email prefix as display name
+  }));
+
+  item.optionalAttendees.addAsync(attendees, function(result) {
+    if (result.status === Office.AsyncResultStatus.Succeeded) {
+      console.log("Added attendees:", emailAddresses);
+    } else {
+      console.log("Failed to add attendees:", result.error);
+    }
+    if (callback) callback();
+  });
+}
+
 function evaluateWarnings(shortDescription, location) {
   const warnings = [];
 
-  // Basic emoji detection (typical emoji ranges)
   const emojiRegex = /[\u{1F300}-\u{1FAFF}]/u;
   if (emojiRegex.test(shortDescription)) {
     warnings.push("Short Description contains emojis. Standard advises against emojis.");
@@ -202,12 +281,6 @@ function evaluateWarnings(shortDescription, location) {
   return warnings;
 }
 
-/**
- * Normalize category:
- * - Uppercase
- * - Auto-correct to closest known category if needed.
- * Currently: exact match only; can be expanded to fuzzy match later.
- */
 function normalizeCategory(categoryInput) {
   const upper = (categoryInput || "").toUpperCase().trim();
   const knownNames = CATEGORY_DEFINITIONS.map(c => c.name);
@@ -216,63 +289,78 @@ function normalizeCategory(categoryInput) {
     return upper;
   }
 
-  // Simple auto-correct: case-insensitive, trim, then fallback to PERFORMANCE if no match.
   const lower = upper.toLowerCase();
   const found = knownNames.find(name => name.toLowerCase() === lower);
   if (found) return found;
 
-  // Fallback: PERFORMANCE as default if truly unknown.
   showWarnings(["Unrecognized category '" + categoryInput + "'. Auto-corrected to PERFORMANCE."]);
   return "PERFORMANCE";
 }
 
-/**
- * Ensure master categories exist with correct colors.
- * Uses mailbox.masterCategories (Mailbox 1.8+).
- */
 function ensureMasterCategories() {
   const mailbox = Office.context.mailbox;
-  if (!mailbox || !mailbox.masterCategories) return;
+  if (!mailbox || !mailbox.masterCategories) {
+    console.log("Master categories API not available on this client");
+    return;
+  }
 
   mailbox.masterCategories.getAsync(function (asyncResult) {
     if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-      // Not fatal for naming logic; skip.
+      console.log("Failed to get master categories:", asyncResult.error);
       return;
     }
 
     const existing = asyncResult.value || [];
     const existingNames = existing.map(c => c.displayName.toUpperCase());
-
     const toAdd = CATEGORY_DEFINITIONS.filter(c => !existingNames.includes(c.name));
 
-    if (toAdd.length === 0) return;
+    if (toAdd.length === 0) {
+      console.log("All categories already exist");
+      return;
+    }
 
+    console.log("Adding categories:", toAdd.map(c => c.name));
+
+    // Try multiple color format approaches for compatibility
     const masterCategoriesToAdd = toAdd.map(c => ({
       displayName: c.name,
-      color: "Office.MailboxEnums.CategoryColor." + c.color
+      color: Office.MailboxEnums.CategoryColor[c.color]
     }));
 
-    // Some clients accept string preset names directly; to be safe, simplify:
-    const masterCategoriesToAddFixed = toAdd.map(c => ({
-      displayName: c.name,
-      color: c.color // e.g., "Preset0"
-    }));
-
-    mailbox.masterCategories.addAsync(masterCategoriesToAddFixed, function () {
-      // Even if this fails, subject/loc/duration still work.
+    mailbox.masterCategories.addAsync(masterCategoriesToAdd, function (addResult) {
+      if (addResult.status === Office.AsyncResultStatus.Succeeded) {
+        console.log("Successfully added categories");
+      } else {
+        console.log("Failed to add categories:", addResult.error);
+        // Fallback: try with string color values
+        const fallbackCategories = toAdd.map(c => ({
+          displayName: c.name,
+          color: c.color
+        }));
+        mailbox.masterCategories.addAsync(fallbackCategories, function (fallbackResult) {
+          if (fallbackResult.status === Office.AsyncResultStatus.Succeeded) {
+            console.log("Successfully added categories with fallback method");
+          } else {
+            console.log("Fallback also failed:", fallbackResult.error);
+          }
+        });
+      }
     });
   });
 }
 
-/**
- * Apply category and duration rules to the current appointment.
- */
 function applyCategoryAndDuration(item, categoryName) {
-  // First: apply category label to item
+  // Apply category label to item
   if (item.categories && item.categories.addAsync) {
-    item.categories.addAsync([categoryName], function () {
-      // Ignore errors here; naming still applied.
+    item.categories.addAsync([categoryName], function (catResult) {
+      if (catResult.status === Office.AsyncResultStatus.Succeeded) {
+        console.log("Category applied:", categoryName);
+      } else {
+        console.log("Failed to apply category:", catResult.error);
+      }
     });
+  } else {
+    console.log("Categories API not available on this client");
   }
 
   // RELEASE DAY: force all-day, no prompt
@@ -317,15 +405,12 @@ function applyCategoryAndDuration(item, categoryName) {
       let shouldApplyDefault = false;
 
       if (!lastCategoryApplied) {
-        // First time using the helper on this item: apply default directly
         shouldApplyDefault = true;
       } else if (lastCategoryApplied === categoryName &&
         lastStartTicks === start.getTime() &&
         lastDurationMinutes === currentMinutes) {
-        // Still at last default -> safe to reapply
         shouldApplyDefault = true;
       } else {
-        // Category changed or user modified time -> ask
         const msg =
           "Detected custom or previous duration.\n" +
           "Apply default " + categoryName + " duration of " + durationMinutes + " minutes?";
@@ -340,7 +425,6 @@ function applyCategoryAndDuration(item, categoryName) {
         return;
       }
 
-      // Apply default duration
       const newEnd = new Date(start.getTime() + durationMinutes * 60000);
       item.end.setAsync(newEnd, function (setResult) {
         if (setResult.status !== Office.AsyncResultStatus.Succeeded) {
