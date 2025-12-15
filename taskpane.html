@@ -1,20 +1,4 @@
-<label for="locationInput" class="field-label">Location (required)</label>
-      <input id="locationInput" type="text" placeholder="Studio, venue, city, etc." />
-
-      <label for="rosterAttendees" class="field-label">Attendees from Roster (optional)</label>
-      <input id="rosterAttendees" type="text" placeholder="704 Prod, Kyla Harmony" list="attendeeList" />
-
-      <datalist id="attendeeList">
-        <option value="704 Prod"></option>
-        <option value="704 Lenz"></option>
-        <option value="Kyla Harmony"></option>
-        <option value="AP"></option>
-        <option value="Medeuca"></option>
-        <option value="Crosshairs"></option>
-        <option value="K4"></option>
-      </datalist>
-
-      <label for="manualAttendees" class="field-label">Additional<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8" />
@@ -32,7 +16,7 @@
       <span id="step2-label" class="step">Step 2: Details</span>
     </div>
 
-    <!-- STEP 1: CATEGORY -->
+    <!-- STEP 1: CATEGORY ONLY -->
     <div id="step1" class="step-panel">
       <label for="categorySelect" class="field-label">Category (required)</label>
       <select id="categorySelect">
@@ -56,7 +40,7 @@
       </div>
     </div>
 
-    <!-- STEP 2: DETAILS -->
+    <!-- STEP 2: ALL DETAILS -->
     <div id="step2" class="step-panel hidden">
       <label for="artistInput" class="field-label">Artist / Participants (required)</label>
       <input id="artistInput" type="text" placeholder="Example: 704 Prod, Kyla Harmony" list="artistList" />
@@ -72,10 +56,14 @@
       </datalist>
 
       <label for="shortDescription" class="field-label">Short Description (required)</label>
-      <input id="shortDescription" type="text" placeholder="Short, functional description" />
+      <input id="shortDescription" type="text" placeholder="Brief, functional description" />
 
       <label for="locationInput" class="field-label">Location (required)</label>
       <input id="locationInput" type="text" placeholder="Studio, venue, city, etc." />
+
+      <label for="manualAttendees" class="field-label">Additional Attendees (optional)</label>
+      <input id="manualAttendees" type="text" placeholder="email@example.com, another@example.com" />
+      <p class="field-hint">Roster artists will be auto-invited. Add other emails here.</p>
 
       <div id="warnings" class="warnings hidden"></div>
       <div id="errors" class="errors hidden"></div>
