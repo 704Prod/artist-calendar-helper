@@ -237,11 +237,11 @@ function isValidEmail(email) {
 }
 
 /**
- * Add attendees to the appointment as optional attendees
+ * Add attendees to the appointment as required attendees
  */
 function addAttendees(item, emailAddresses, callback) {
-  if (!item.optionalAttendees || !item.optionalAttendees.addAsync) {
-    console.log("Optional attendees API not available");
+  if (!item.requiredAttendees || !item.requiredAttendees.addAsync) {
+    console.log("Required attendees API not available");
     if (callback) callback();
     return;
   }
@@ -251,9 +251,9 @@ function addAttendees(item, emailAddresses, callback) {
     displayName: email.split("@")[0] // Use email prefix as display name
   }));
 
-  item.optionalAttendees.addAsync(attendees, function(result) {
+  item.requiredAttendees.addAsync(attendees, function(result) {
     if (result.status === Office.AsyncResultStatus.Succeeded) {
-      console.log("Added attendees:", emailAddresses);
+      console.log("Added required attendees:", emailAddresses);
     } else {
       console.log("Failed to add attendees:", result.error);
     }
