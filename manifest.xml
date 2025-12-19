@@ -6,7 +6,7 @@
            xsi:type="MailApp">
 
   <Id>9b25a5b0-5b88-4b02-9d33-4e0b0c8e7040</Id>
-  <Version>1.0.2.0</Version>
+  <Version>1.0.3.0</Version>
   <ProviderName>Legacy Crew</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   
@@ -108,4 +108,5 @@
   </VersionOverrides>
   
 </OfficeApp>
+
 
