@@ -3,13 +3,12 @@
 
 // Artist roster with email addresses
 const ARTIST_ROSTER = [
-  { name: "704 Prod", email: "prod@legacycrew.com" },
-  { name: "704 Lenz", email: "lenz@legacycrew.com" },
-  { name: "Kyla Harmony", email: "kyla@legacycrew.com" },
-  { name: "AP", email: "ap@legacycrew.com" },
-  { name: "Medeuca", email: "medeuca@legacycrew.com" },
-  { name: "Crosshairs", email: "crosshairs@legacycrew.com" },
-  { name: "K4", email: "k4@legacycrew.com" }
+  { name: "704 Prod", email: "prod@thelegacycrew.com" },
+  { name: "704 Lenz", email: "lenz@thelegacycrew.com" },
+  { name: "Kyla Harmony", email: "kyla@thelegacycrew.com" },
+  { name: "Medeuca", email: "medeuca@thelegacycrew.com" },
+  { name: "Crosshairs", email: "crosshairs@thelegacycrew.com" },
+  { name: "K4", email: "k4@thelegacycrew.com" }
 ];
 
 // Category definitions and colors (Office.MailboxEnums.CategoryColor)
@@ -478,3 +477,4 @@ function showStatus(msg) {
   el.textContent = msg;
   el.classList.remove("hidden");
 }
+
