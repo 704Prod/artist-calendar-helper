@@ -1,7 +1,7 @@
 // taskpane.js
-// Artist Calendar Helper - v1.0.3
+// Artist Calendar Helper - v1.0.4
 
-// Artist roster with email addresses
+// Artist roster with email addresses (all using thelegacycrew.com domain)
 const ARTIST_ROSTER = [
   { name: "704 Prod", email: "prod@thelegacycrew.com" },
   { name: "704 Lenz", email: "lenz@thelegacycrew.com" },
@@ -60,10 +60,49 @@ function initializeUI() {
   const step1Next = document.getElementById("step1Next");
   const step2Back = document.getElementById("step2Back");
   const applyButton = document.getElementById("applyButton");
+  const artistInput = document.getElementById("artistInput");
 
   step1Next.addEventListener("click", onStep1Next);
   step2Back.addEventListener("click", onStep2Back);
   applyButton.addEventListener("click", onApplyClicked);
+  
+  // Enhanced dropdown handling for multiple artist selection
+  if (artistInput) {
+    let previousValue = "";
+    
+    artistInput.addEventListener("input", function(e) {
+      const currentValue = e.target.value;
+      
+      // Check if a complete artist name was just selected from the datalist
+      const knownArtists = ["704 Prod", "704 Lenz", "Kyla Harmony", "Medeuca", "Crosshairs", "K4"];
+      const justSelectedArtist = knownArtists.find(name => 
+        currentValue === name && previousValue !== name
+      );
+      
+      if (justSelectedArtist && previousValue && previousValue.trim() !== "") {
+        // An artist was selected and there's already content
+        const existingNames = previousValue.split(",").map(n => n.trim()).filter(n => n);
+        
+        if (!existingNames.includes(justSelectedArtist)) {
+          // Append the new selection
+          e.target.value = previousValue.trim() + ", " + justSelectedArtist;
+        }
+      }
+      
+      previousValue = e.target.value;
+    });
+    
+    // Add helpful placeholder hints
+    artistInput.addEventListener("focus", function() {
+      if (!this.value) {
+        this.placeholder = "Select or type names, separate with commas";
+      }
+    });
+    
+    artistInput.addEventListener("blur", function() {
+      this.placeholder = "Example: 704 Prod, Kyla Harmony";
+    });
+  }
 }
 
 function showStep(stepNumber) {
@@ -477,4 +516,3 @@ function showStatus(msg) {
   el.textContent = msg;
   el.classList.remove("hidden");
 }
-
